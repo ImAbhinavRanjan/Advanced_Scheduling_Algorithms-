@@ -47,11 +47,25 @@
                     <h2 class="text-xl font-semibold mb-4">Round Robin Results</h2>
                     <p><strong>Average Waiting Time:</strong> <span id="rr-wait"></span> units</p>
                     <p><strong>Average Turnaround Time:</strong> <span id="rr-tat"></span> units</p>
+                    <p><strong>Context Switches:</strong> <span id="rr-context"></span></p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h2 class="text-xl font-semibold mb-4">MMRRA Results</h2>
                     <p><strong>Average Waiting Time:</strong> <span id="mmrra-wait"></span> units</p>
                     <p><strong>Average Turnaround Time:</strong> <span id="mmrra-tat"></span> units</p>
+                    <p><strong>Context Switches:</strong> <span id="mmrra-context"></span></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">ANRR Results</h2>
+                    <p><strong>Average Waiting Time:</strong> <span id="anrr-wait"></span> units</p>
+                    <p><strong>Average Turnaround Time:</strong> <span id="anrr-tat"></span> units</p>
+                    <p><strong>Context Switches:</strong> <span id="anrr-context"></span></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">AMRR Results</h2>
+                    <p><strong>Average Waiting Time:</strong> <span id="amrr-wait"></span> units</p>
+                    <p><strong>Average Turnaround Time:</strong> <span id="amrr-tat"></span> units</p>
+                    <p><strong>Context Switches:</strong> <span id="amrr-context"></span></p>
                 </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
@@ -110,16 +124,24 @@
                     hideError();
                     document.getElementById('rr-wait').textContent = data.rr_avg_wait;
                     document.getElementById('rr-tat').textContent = data.rr_avg_tat;
+                    document.getElementById('rr-context').textContent = data.rr_context;
                     document.getElementById('mmrra-wait').textContent = data.mmrra_avg_wait;
                     document.getElementById('mmrra-tat').textContent = data.mmrra_avg_tat;
-                    plotComparison(data.rr_avg_wait, data.rr_avg_tat, data.mmrra_avg_wait, data.mmrra_avg_tat);
+                    document.getElementById('mmrra-context').textContent = data.mmrra_context;
+                    document.getElementById('anrr-wait').textContent = data.anrr_avg_wait;
+                    document.getElementById('anrr-tat').textContent = data.anrr_avg_tat;
+                    document.getElementById('anrr-context').textContent = data.anrr_context;
+                    document.getElementById('amrr-wait').textContent = data.amrr_avg_wait;
+                    document.getElementById('amrr-tat').textContent = data.amrr_avg_tat;
+                    document.getElementById('amrr-context').textContent = data.amrr_context;
+                    plotComparison(data.rr_avg_wait, data.rr_avg_tat, data.mmrra_avg_wait, data.mmrra_avg_tat, data.anrr_avg_wait, data.anrr_avg_tat, data.amrr_avg_wait, data.amrr_avg_tat);
                     document.getElementById('results').classList.remove('hidden');
                 }
             })
             .catch(() => showError('Error processing request.'));
         }
 
-        function plotComparison(rrAvgWait, rrAvgTat, mmrraAvgWait, mmrraAvgTat) {
+        function plotComparison(rrAvgWait, rrAvgTat, mmrraAvgWait, mmrraAvgTat, anrrAvgWait, anrrAvgTat, amrrAvgWait, amrrAvgTat) {
             const ctx = document.getElementById('comparison-chart').getContext('2d');
 
             if (chartInstance) {
@@ -142,6 +164,20 @@
                             label: 'MMRRA',
                             data: [mmrraAvgWait, mmrraAvgTat],
                             backgroundColor: '#4CAF50',
+                            barThickness: 'flex',
+                            maxBarThickness: 100,
+                        },
+                        {
+                            label: 'ANRR',
+                            data: [anrrAvgWait, anrrAvgTat],
+                            backgroundColor: '#FFC107',
+                            barThickness: 'flex',
+                            maxBarThickness: 100,
+                        },
+                        {
+                            label: 'AMRR',
+                            data: [amrrAvgWait, amrrAvgTat],
+                            backgroundColor: '#9C27B0',
                             barThickness: 'flex',
                             maxBarThickness: 100,
                         },
@@ -170,7 +206,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Comparison of RR and MMRRA',
+                            text: 'Comparison of RR, MMRRA, ANRR, and AMRR',
                         },
                     },
                 },
